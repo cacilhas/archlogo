@@ -1,0 +1,7 @@
+*~
+*.bak
+.*
+.vscode
+core
+target
+!.gitignore
