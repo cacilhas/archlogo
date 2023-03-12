@@ -5,6 +5,7 @@ use ::image::{load_from_memory_with_format};
 use uname;
 
 
+#[cfg(target_os = "linux")]
 fn main() {
     let screen_size = app::screen_size();
     let mut logo = get_logo().unwrap();
