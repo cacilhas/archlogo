@@ -2,7 +2,7 @@ use std::error;
 
 use fltk::{prelude::*, *};
 use ::image::{load_from_memory_with_format};
-use uname;
+
 
 
 #[cfg(target_os = "linux")]
@@ -51,7 +51,7 @@ fn get_logo() -> Result<image::RgbImage, Box<dyn error::Error>> {
     let imgh = img.height() as i32;
     let rawimg = img.as_bytes();
 
-    let res = image::RgbImage::new(&rawimg, imgw, imgh, enums::ColorDepth::Rgba8)?;
+    let res = image::RgbImage::new(rawimg, imgw, imgh, enums::ColorDepth::Rgba8)?;
     Ok(res)
 }
 
