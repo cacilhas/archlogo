@@ -2,7 +2,10 @@ extern crate anyhow;
 extern crate eframe;
 extern crate image;
 
-use std::{error, io};
+use std::{
+    error,
+    io,
+};
 use eframe::egui;
 use image::Pixel;
 
@@ -133,7 +136,7 @@ struct PressKeys {
 }
 
 
-fn get_logo() -> anyhow::Result<image::RgbImage> {
+fn get_logo() -> anyhow::Result<image::RgbaImage> {
     let logo = include_bytes!("resources/logo.png");
 
     let img = image::load_from_memory_with_format(
@@ -144,7 +147,7 @@ fn get_logo() -> anyhow::Result<image::RgbImage> {
     let width  = img.width() as u32;
     let height = img.height() as u32;
 
-    let res = image::RgbImage::from_raw(width, height, img.to_vec())
+    let res = image::RgbaImage::from_raw(width, height, img.to_vec())
         .ok_or_else(|| io::Error::from(io::ErrorKind::InvalidData))?;
     Ok(res)
 }
