@@ -114,7 +114,9 @@ impl eframe::App for App {
             );
             let size = texture.size_vec2();
             ui.image(texture, size);
-            ui.heading(&self.uname);
+            ui.centered_and_justified(|ui|
+                ui.strong(&self.uname)
+            );
         });
     }
 }
