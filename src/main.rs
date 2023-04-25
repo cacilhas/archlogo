@@ -14,14 +14,32 @@ use image::Pixel;
 fn main() {
     let options = eframe::NativeOptions {
         initial_window_size: Some(egui::vec2(800.0, 100.0)),
+        centered: true,
         resizable: false,
         run_and_return: false,
         ..Default::default()
     };
+    let font = include_bytes!("resources/firacode.ttf");
+    let font = egui::FontData::from_static(font);
+    let mut fonts = egui::FontDefinitions::default();
+    fonts.font_data.insert("mono".into(), font);
+    fonts.families
+        .get_mut(&egui::FontFamily::Proportional)
+        .unwrap()
+        .insert(0, "mono".into());
     eframe::run_native(
         "About System",
         options,
-        Box::new(|_| Box::new(App::default())),
+        Box::new(|cc| {
+            let visuals = egui::Visuals {
+                override_text_color: Some(egui::Color32::BLACK),
+                panel_fill: egui::Color32::LIGHT_GRAY,
+                ..Default::default()
+            };
+            cc.egui_ctx.set_visuals(visuals);
+            cc.egui_ctx.set_fonts(fonts);
+            Box::new(App::default())
+        }),
     ).unwrap();
 }
 
@@ -72,7 +90,7 @@ impl Default for App {
             uname:   get_uname().unwrap(),
             texture: Default::default(),
             width:   size[0] as f32,
-            height:  size[1] as f32,
+            height:  size[1] as f32 + 36.0,
         }
     }
 }
@@ -96,6 +114,7 @@ impl eframe::App for App {
             );
             let size = texture.size_vec2();
             ui.image(texture, size);
+            ui.heading(&self.uname);
         });
     }
 }
