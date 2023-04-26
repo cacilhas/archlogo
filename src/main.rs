@@ -2,13 +2,9 @@ extern crate anyhow;
 extern crate eframe;
 extern crate image;
 
-use std::{
-    error,
-    io,
-};
 use eframe::egui;
 use image::Pixel;
-
+use std::{error, io};
 
 #[cfg(target_os = "linux")]
 fn main() {
@@ -23,7 +19,8 @@ fn main() {
     let font = egui::FontData::from_static(font);
     let mut fonts = egui::FontDefinitions::default();
     fonts.font_data.insert("mono".into(), font);
-    fonts.families
+    fonts
+        .families
         .get_mut(&egui::FontFamily::Proportional)
         .unwrap()
         .insert(0, "mono".into());
@@ -40,27 +37,30 @@ fn main() {
             cc.egui_ctx.set_fonts(fonts);
             Box::new(App::default())
         }),
-    ).unwrap();
+    )
+    .unwrap();
 }
 
-
 struct App {
-    logo:    egui::ColorImage,
-    uname:   String,
+    logo: egui::ColorImage,
+    uname: String,
     texture: Option<egui::TextureHandle>,
-    width:   f32,
-    height:  f32,
+    width: f32,
+    height: f32,
 }
 
 impl App {
-
     pub fn pressed_keys(ctx: &egui::Context) -> PressKeys {
         let mut escape = false;
         let events = ctx.input(|input| input.events.to_owned());
         for event in events.iter() {
             match event {
-                egui::Event::Key { key, pressed, repeat: _, modifiers: _ }
-                    if *key == egui::Key::Escape => escape = *pressed,
+                egui::Event::Key {
+                    key,
+                    pressed,
+                    repeat: _,
+                    modifiers: _,
+                } if *key == egui::Key::Escape => escape = *pressed,
                 _ => (),
             }
         }
@@ -77,20 +77,18 @@ impl Default for App {
             for x in 0..size[0] {
                 let pixel = logo.get_pixel(x as u32, y as u32);
                 let pixel = pixel.to_rgba().0;
-                pixels.push(
-                    egui::Color32::from_rgba_premultiplied(
-                        pixel[0], pixel[1], pixel[2], pixel[3],
-                    )
-                );
+                pixels.push(egui::Color32::from_rgba_premultiplied(
+                    pixel[0], pixel[1], pixel[2], pixel[3],
+                ));
             }
         }
 
         Self {
-            logo:    egui::ColorImage { size, pixels },
-            uname:   get_uname().unwrap(),
+            logo: egui::ColorImage { size, pixels },
+            uname: get_uname().unwrap(),
             texture: Default::default(),
-            width:   size[0] as f32,
-            height:  size[1] as f32 + 36.0,
+            width: size[0] as f32,
+            height: size[1] as f32 + 36.0,
         }
     }
 }
@@ -105,35 +103,28 @@ impl eframe::App for App {
         }
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            let texture = self.texture.get_or_insert_with(
-                || ui.ctx().load_texture(
+            let texture = self.texture.get_or_insert_with(|| {
+                ui.ctx().load_texture(
                     "logo",
                     egui::ImageData::Color(self.logo.to_owned()),
                     Default::default(),
                 )
-            );
+            });
             let size = texture.size_vec2();
             ui.image(texture, size);
-            ui.centered_and_justified(|ui|
-                ui.strong(&self.uname)
-            );
+            ui.centered_and_justified(|ui| ui.strong(&self.uname));
         });
     }
 }
-
 
 struct PressKeys {
     escape: bool,
 }
 
-
 fn get_logo() -> anyhow::Result<image::RgbaImage> {
     let logo = include_bytes!("resources/logo.png");
 
-    let img = image::load_from_memory_with_format(
-        logo,
-        image::ImageFormat::Png,
-    )?.to_rgba8();
+    let img = image::load_from_memory_with_format(logo, image::ImageFormat::Png)?.to_rgba8();
 
     let (width, height) = img.dimensions();
     let res = image::RgbaImage::from_raw(width, height, img.to_vec())
@@ -143,15 +134,12 @@ fn get_logo() -> anyhow::Result<image::RgbaImage> {
 
 fn get_uname() -> Result<String, Box<dyn error::Error>> {
     let info = uname::uname()?;
-    Ok(
-        [
-            info.sysname,
-            info.nodename,
-            info.release,
-            info.version,
-            info.machine,
-        ]
-        .join(" ")
-    )
+    Ok([
+        info.sysname,
+        info.nodename,
+        info.release,
+        info.version,
+        info.machine,
+    ]
+    .join(" "))
 }
-
