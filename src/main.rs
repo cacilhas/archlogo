@@ -121,36 +121,6 @@ impl eframe::App for App {
     }
 }
 
-//     let mut logo = get_logo().unwrap();
-//     let width = logo.width();
-//     let height = logo.height() + 30;
-//
-//     let winx = ((screen_size.0 as i32)-width) / 2;
-//     let winy = ((screen_size.1 as i32)-height) / 2;
-//
-//     let app = app::App::default();
-//     let mut win= window::Window::new(
-//         winx, winy, width, height, "About System",
-//     );
-//
-//     let mut frame = frame::Frame::default()
-//         .with_size(logo.width(), logo.height());
-//     frame.draw(move |f| {
-//         logo.draw(f.x(), f.y(), logo.width(), logo.height());
-//     });
-//     let info_msg = get_uname().unwrap();
-//     let mut info = frame::Frame::default()
-//         .with_pos(0, frame.y() + frame.height())
-//         .with_size(width, 30)
-//         .with_label(info_msg.as_str());
-//     info.set_label_size(12);
-//
-//     win.end();
-//     win.show();
-//
-//     app.run().unwrap();
-// }
-
 
 struct PressKeys {
     escape: bool,
@@ -165,9 +135,7 @@ fn get_logo() -> anyhow::Result<image::RgbaImage> {
         image::ImageFormat::Png,
     )?.to_rgba8();
 
-    let width  = img.width() as u32;
-    let height = img.height() as u32;
-
+    let (width, height) = img.dimensions();
     let res = image::RgbaImage::from_raw(width, height, img.to_vec())
         .ok_or_else(|| io::Error::from(io::ErrorKind::InvalidData))?;
     Ok(res)
