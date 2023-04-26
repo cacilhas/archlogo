@@ -35,7 +35,7 @@ fn main() {
             };
             cc.egui_ctx.set_visuals(visuals);
             cc.egui_ctx.set_fonts(fonts);
-            Box::new(App::default())
+            Box::<App>::default()
         }),
     )
     .unwrap();
