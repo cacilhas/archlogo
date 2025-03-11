@@ -5,6 +5,8 @@ edition = "2021"
 
 [profile.release]
 opt-level = "s"
+codegen-units = 1
+panic = "abort"
 debug = false
 rpath = false
 strip = true
